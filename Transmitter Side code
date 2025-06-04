@@ -1,0 +1,51 @@
+#include <reg51.h>
+
+// Assuming 4 direction commands via RF transmitter using port P1
+sbit FORWARD = P1^0;
+sbit BACKWARD = P1^1;
+sbit LEFT = P1^2;
+sbit RIGHT = P1^3;
+
+void delay() {
+    int i, j;
+    for(i = 0; i < 100; i++)
+        for(j = 0; j < 100; j++);
+}
+
+// Dummy ADC read functions for accelerometer X, Y axes
+int read_X() {
+    // Replace with actual ADC reading code for X axis
+    return 500;  // Placeholder value
+}
+
+int read_Y() {
+    // Replace with actual ADC reading code for Y axis
+    return 500;  // Placeholder value
+}
+
+void main() {
+    int x, y;
+    while(1) {
+        x = read_X();
+        y = read_Y();
+
+        // Neutral zone
+        if (x > 450 && x < 550 && y > 450 && y < 550) {
+            P1 = 0x00;  // Stop
+        }
+        else if (y >= 550) {
+            FORWARD = 1; BACKWARD = 0; LEFT = 0; RIGHT = 0;
+        }
+        else if (y <= 450) {
+            BACKWARD = 1; FORWARD = 0; LEFT = 0; RIGHT = 0;
+        }
+        else if (x <= 450) {
+            LEFT = 1; RIGHT = 0; FORWARD = 0; BACKWARD = 0;
+        }
+        else if (x >= 550) {
+            RIGHT = 1; LEFT = 0; FORWARD = 0; BACKWARD = 0;
+        }
+
+        delay();
+    }
+}

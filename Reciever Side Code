@@ -1,0 +1,57 @@
+#include <reg51.h>
+
+// Define Motor Control Pins
+sbit L_MOTOR1 = P2^0;
+sbit L_MOTOR2 = P2^1;
+sbit R_MOTOR1 = P2^2;
+sbit R_MOTOR2 = P2^3;
+
+// Delay function
+void delay() {
+    int i, j;
+    for(i = 0; i < 100; i++)
+        for(j = 0; j < 100; j++);
+}
+
+// Motor control functions
+void move_forward() {
+    L_MOTOR1 = 1; L_MOTOR2 = 0;
+    R_MOTOR1 = 1; R_MOTOR2 = 0;
+}
+
+void move_backward() {
+    L_MOTOR1 = 0; L_MOTOR2 = 1;
+    R_MOTOR1 = 0; R_MOTOR2 = 1;
+}
+
+void turn_left() {
+    L_MOTOR1 = 0; L_MOTOR2 = 0;
+    R_MOTOR1 = 1; R_MOTOR2 = 0;
+}
+
+void turn_right() {
+    L_MOTOR1 = 1; L_MOTOR2 = 0;
+    R_MOTOR1 = 0; R_MOTOR2 = 0;
+}
+
+void stop() {
+    L_MOTOR1 = 0; L_MOTOR2 = 0;
+    R_MOTOR1 = 0; R_MOTOR2 = 0;
+}
+
+void main() {
+    while(1) {
+        if(P1 == 0x01)         // Forward
+            move_forward();
+        else if(P1 == 0x02)    // Backward
+            move_backward();
+        else if(P1 == 0x04)    // Left
+            turn_left();
+        else if(P1 == 0x08)    // Right
+            turn_right();
+        else                   // No input / Neutral
+            stop();
+        
+        delay();
+    }
+}
